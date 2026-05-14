@@ -147,7 +147,7 @@ function initializeGeneratorUI() {
 
     const copyPassword = async () => {
         const password = elements.output.textContent;
-        if (!password || password.startsWith('Select ')) return;
+        if (!password || elements.copyBtn.disabled) return;
 
         try {
             await navigator.clipboard.writeText(password);
