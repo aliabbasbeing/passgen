@@ -13,8 +13,8 @@ class PasswordGenerator {
             throw new Error('Invalid random range.');
         }
 
-        const maxUint32 = 0xffffffff;
-        const limit = Math.floor((maxUint32 + 1) / maxExclusive) * maxExclusive;
+        const maxUint32PlusOne = 0x100000000;
+        const limit = maxUint32PlusOne - (maxUint32PlusOne % maxExclusive);
         const randomBuffer = new Uint32Array(1);
 
         do {
@@ -101,6 +101,7 @@ function initializeGeneratorUI() {
 
     const elements = {
         output: document.getElementById('passwordDisplay'),
+        copyFeedback: document.getElementById('copyFeedback'),
         generateBtn: document.getElementById('generateBtn'),
         copyBtn: document.getElementById('copyBtn'),
         lengthSlider: document.getElementById('passwordLength'),
@@ -136,12 +137,14 @@ function initializeGeneratorUI() {
         if (!result.password) {
             elements.output.textContent = 'Select at least one character set';
             elements.copyBtn.disabled = true;
+            elements.copyFeedback.textContent = '';
             renderStrength(1, result.label);
             return;
         }
 
         elements.output.textContent = result.password;
         elements.copyBtn.disabled = false;
+        elements.copyFeedback.textContent = '';
         renderStrength(result.score, `${result.label} (${Math.round(result.entropy)} bits)`);
     };
 
@@ -152,12 +155,14 @@ function initializeGeneratorUI() {
         try {
             await navigator.clipboard.writeText(password);
             elements.copyBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
+            elements.copyFeedback.textContent = 'Copied to clipboard.';
             setTimeout(() => {
                 elements.copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i>';
             }, 1000);
         } catch (_error) {
             console.error('Failed to copy password to clipboard.', _error);
             elements.copyBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+            elements.copyFeedback.textContent = 'Copy failed. Clipboard permissions may be blocked.';
             setTimeout(() => {
                 elements.copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i>';
             }, 1000);
