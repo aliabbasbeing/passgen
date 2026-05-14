@@ -156,6 +156,7 @@ function initializeGeneratorUI() {
                 elements.copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i>';
             }, 1000);
         } catch (_error) {
+            console.error('Failed to copy password to clipboard.', _error);
             elements.copyBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
             setTimeout(() => {
                 elements.copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i>';
